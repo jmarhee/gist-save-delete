@@ -11,13 +11,20 @@ ids = []
 
 if __name__ == "__main__":
 	for g in gists:
-        	key = str(g['files'].keys()).replace("dict_keys(['","").replace("'])","")
-        	try:
-                	url = g['files']['%s' % (key)]['raw_url']
-        	except:
-                	continue
-        	if "Week%20of%20" in url:
-                	ids.append(g['id'])
+		keys = []
+		for k in g['files'].keys():
+			if k in keys:
+				continue
+			else:
+				keys.append(k)
+		try:
+			url = g['files']['%s' % (k)]['raw_url']
+			if "Week%20of%20" in url:
+				ids.append(g['id'])
+		except Exception as e:
+			print(e)
+			continue
+
 	for gid in ids:
                 #id = g['id']
                 print("Deleting gist#%s" % gid)
