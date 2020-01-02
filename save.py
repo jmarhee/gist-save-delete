@@ -10,17 +10,27 @@ gists = requests.get("%s/users/%s/gists" % (BASE_URL, USER), headers={"Authoriza
 urls = []
 
 for g in gists:
-	key = str(g['files'].keys()).replace("dict_keys(['","").replace("'])","")
-	try:
-		url = g['files']['%s' % (key)]['raw_url']
-	except:
-		continue
-	if "Week%20of%20" in url:
-		urls.append(url)
+	keys = []
+	for k in g['files'].keys():
+		if k in keys:
+			continue
+		else:
+			keys.append(k)
 
-for u in urls:
-	filename = str("Week%20of" + u.split('Week%20of',-1)[1]).replace("%20","-")
-	body = requests.get(u).text
-	f = open(filename, "w")
-	f.write(body)
-	f.close()
+	try:
+		for uk in keys:
+			url = g['files']['%s' % (uk)]['raw_url']
+			urls.append(url)
+			
+			filename = "tmp/" + g['files'][uk]['filename']
+			body = requests.get(url).text
+			f = open(filename, "w")
+			f.write(body)
+			f.close()
+
+	except Exception as e:
+		print(e)
+		continue
+	
+
+
